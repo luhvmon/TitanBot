@@ -49,15 +49,15 @@ const validatedTables = Object.fromEntries(
 
 
 export const pgConfig = {
-    url: process.env.POSTGRES_URL || 'postgresql://localhost:5432/titanbot',
+    url: process.env.DATABASE_URL || process.env.POSTGRES_URL || 'postgresql://localhost:5432/titanbot',
     
     options: {
         
-        host: process.env.POSTGRES_HOST || 'localhost',
-        port: parseInt(process.env.POSTGRES_PORT) || 5432,
-        database: process.env.POSTGRES_DB || 'titanbot',
-        user: process.env.POSTGRES_USER || 'postgres',
-        password: (process.env.POSTGRES_PASSWORD || '').toString(),
+        host: process.env.PGHOST || process.env.POSTGRES_HOST || 'localhost',
+        port: parseInt(process.env.PGPORT || process.env.POSTGRES_PORT) || 5432,
+        database: process.env.PGDATABASE || process.env.POSTGRES_DB || 'titanbot',
+        user: process.env.PGUSER || process.env.POSTGRES_USER || 'postgres',
+        password: (process.env.PGPASSWORD || process.env.POSTGRES_PASSWORD || '').toString(),
         ssl: false,
         
         
