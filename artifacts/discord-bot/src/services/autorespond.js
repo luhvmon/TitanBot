@@ -33,7 +33,7 @@ export async function addAutorespond(client, guildId, trigger, response, options
         id: Date.now().toString(),
         trigger: normalizedTrigger,
         response: response.trim(),
-        matchType: options.matchType || 'contains',
+        matchType: options.matchType || 'word',
         createdBy: options.createdBy || null,
         createdAt: new Date().toISOString(),
     };
@@ -70,6 +70,8 @@ export async function findMatchingAutorespond(client, guildId, content) {
     return autoresponds.find(r => {
         if (r.matchType === 'exact') return lower === r.trigger;
         if (r.matchType === 'startswith') return lower.startsWith(r.trigger);
-        return lower.includes(r.trigger);
+        if (r.matchType === 'contains') return lower.includes(r.trigger);
+        const escaped = r.trigger.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return new RegExp(`\\b${escaped}\\b`, 'i').test(content);
     }) || null;
 }

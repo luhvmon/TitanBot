@@ -36,12 +36,13 @@ export default {
                         .setMaxLength(1000))
                 .addStringOption(opt =>
                     opt.setName('match')
-                        .setDescription('How to match the trigger (default: contains)')
+                        .setDescription('How to match the trigger (default: whole word)')
                         .setRequired(false)
                         .addChoices(
-                            { name: 'Contains (anywhere in message)', value: 'contains' },
-                            { name: 'Exact (whole message only)', value: 'exact' },
-                            { name: 'Starts with', value: 'startswith' },
+                            { name: 'Whole word — "hi" won\'t fire inside "anything" (default)', value: 'word' },
+                            { name: 'Contains — fires anywhere inside a message', value: 'contains' },
+                            { name: 'Exact — whole message must match exactly', value: 'exact' },
+                            { name: 'Starts with — message must begin with trigger', value: 'startswith' },
                         )))
         .addSubcommand(sub =>
             sub
@@ -92,7 +93,7 @@ export default {
                     }
                 }
 
-                const matchLabel = { contains: 'Contains', exact: 'Exact match', startswith: 'Starts with' }[matchType];
+                const matchLabel = { word: 'Whole word', contains: 'Contains', exact: 'Exact match', startswith: 'Starts with' }[matchType] || 'Whole word';
                 return InteractionHelper.safeEditReply(interaction, {
                     embeds: [
                         new EmbedBuilder()
@@ -139,9 +140,9 @@ export default {
                     });
                 }
 
-                const matchLabel = { contains: 'contains', exact: 'exact', startswith: 'starts with' };
+                const matchLabel = { word: 'whole word', contains: 'contains', exact: 'exact', startswith: 'starts with' };
                 const lines = autoresponds.map((r, i) =>
-                    `**${i + 1}.** \`${r.trigger}\` (${matchLabel[r.matchType] || 'contains'})\n↳ ${r.response.length > 80 ? r.response.slice(0, 80) + '…' : r.response}`
+                    `**${i + 1}.** \`${r.trigger}\` (${matchLabel[r.matchType] || 'whole word'})\n↳ ${r.response.length > 80 ? r.response.slice(0, 80) + '…' : r.response}`
                 );
 
                 const embed = new EmbedBuilder()
