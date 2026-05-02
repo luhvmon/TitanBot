@@ -1,6 +1,20 @@
 import { logger } from '../utils/logger.js';
 
 const MAX_TRIGGERS_PER_GUILD = 50;
+const DEFAULT_COOLDOWN_MS = 5000;
+
+const cooldowns = new Map();
+
+export function isOnCooldown(guildId, trigger) {
+    const key = `${guildId}:${trigger}`;
+    const last = cooldowns.get(key);
+    if (!last) return false;
+    return Date.now() - last < DEFAULT_COOLDOWN_MS;
+}
+
+export function setCooldown(guildId, trigger) {
+    cooldowns.set(`${guildId}:${trigger}`, Date.now());
+}
 
 function getKey(guildId) {
     return `guild:${guildId}:autoresponds`;
