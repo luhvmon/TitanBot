@@ -53,13 +53,12 @@ export default {
                 owners.includes(interaction.user.id) ||
                 interaction.client.application?.owner?.id === interaction.user.id ||
                 interaction.client.application?.owner?.members?.has(interaction.user.id);
-            const isAdmin = interaction.member?.permissions?.has('Administrator');
 
-            if (!isOwner && !isAdmin) {
+            if (!isOwner) {
                 return await InteractionHelper.safeReply(interaction, {
                     embeds: [createEmbed({
                         title: 'No Permission',
-                        description: 'You need Administrator permission or be the bot owner to change the status.',
+                        description: 'Only the bot owner can change the status.',
                         color: 'error',
                     })],
                     flags: MessageFlags.Ephemeral,
