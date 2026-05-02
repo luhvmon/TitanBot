@@ -8,7 +8,7 @@ import { logger } from '../utils/logger.js';
 import { getLevelingConfig, getUserLevelData } from '../services/leveling.js';
 import { addXp } from '../services/xpSystem.js';
 import { checkRateLimit } from '../utils/rateLimiter.js';
-import { findMatchingAutorespond, isOnCooldown, setCooldown } from '../services/autorespond.js';
+import { findMatchingAutorespond, isOnCooldown, setCooldown, getAutoRespondConfig } from '../services/autorespond.js';
 
 const MESSAGE_XP_RATE_LIMIT_ATTEMPTS = 12;
 const MESSAGE_XP_RATE_LIMIT_WINDOW_MS = 10000;
@@ -32,7 +32,8 @@ async function handleAutorespond(message, client) {
     if (!message.content || message.content.trim().length === 0) return;
     const match = await findMatchingAutorespond(client, message.guild.id, message.content);
     if (!match) return;
-    if (isOnCooldown(message.guild.id, match.trigger)) return;
+    const config = await getAutoRespondConfig(client, message.guild.id);
+    if (isOnCooldown(message.guild.id, match.trigger, config.cooldownMs)) return;
     setCooldown(message.guild.id, match.trigger);
     await message.reply({ content: match.response });
   } catch (error) {

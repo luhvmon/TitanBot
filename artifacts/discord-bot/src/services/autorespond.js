@@ -5,11 +5,35 @@ const DEFAULT_COOLDOWN_MS = 5000;
 
 const cooldowns = new Map();
 
-export function isOnCooldown(guildId, trigger) {
+function getConfigKey(guildId) {
+    return `guild:${guildId}:autorespond_config`;
+}
+
+export async function getAutoRespondConfig(client, guildId) {
+    try {
+        const data = await client.db.get(getConfigKey(guildId), {});
+        return { cooldownMs: DEFAULT_COOLDOWN_MS, ...data };
+    } catch {
+        return { cooldownMs: DEFAULT_COOLDOWN_MS };
+    }
+}
+
+export async function setAutoRespondConfig(client, guildId, config) {
+    try {
+        const current = await getAutoRespondConfig(client, guildId);
+        await client.db.set(getConfigKey(guildId), { ...current, ...config });
+        return { success: true };
+    } catch (error) {
+        logger.error('Failed to set autorespond config:', error);
+        return { success: false };
+    }
+}
+
+export function isOnCooldown(guildId, trigger, cooldownMs = DEFAULT_COOLDOWN_MS) {
     const key = `${guildId}:${trigger}`;
     const last = cooldowns.get(key);
     if (!last) return false;
-    return Date.now() - last < DEFAULT_COOLDOWN_MS;
+    return Date.now() - last < cooldownMs;
 }
 
 export function setCooldown(guildId, trigger) {
