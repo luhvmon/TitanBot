@@ -300,10 +300,17 @@ class TitanBot extends Client {
   }
 
   async registerCommands() {
-    try {
-      await registerSlashCommands(this, this.config.bot.guildId);
-    } catch (error) {
-      logger.error('Error registering commands:', error);
+    const guildIds = [...this.guilds.cache.keys()];
+    if (guildIds.length === 0) {
+      logger.warn('No guilds found in cache, skipping command registration');
+      return;
+    }
+    for (const guildId of guildIds) {
+      try {
+        await registerSlashCommands(this, guildId);
+      } catch (error) {
+        logger.error(`Error registering commands for guild ${guildId}:`, error);
+      }
     }
   }
 
