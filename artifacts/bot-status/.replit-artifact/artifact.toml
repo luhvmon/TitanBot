@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "TitanBot"
+version = "1.0.0"
+id = "artifacts/bot-status"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22053
+
+[services.development]
+run = "pnpm --filter @workspace/bot-status run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/bot-status", "run", "build" ]
+
+[services.production.run]
+args = ["node", "artifacts/bot-status/server.js"]
+
+[services.env]
+PORT = "22053"
+BASE_PATH = "/"
