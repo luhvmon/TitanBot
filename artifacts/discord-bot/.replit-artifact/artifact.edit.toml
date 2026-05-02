@@ -1,0 +1,15 @@
+kind = "api"
+title = "TitanBot Discord Bot"
+version = "1.0.0"
+id = "discord-bot"
+
+[[services]]
+name = "TitanBot"
+
+[services.development]
+run = "node src/app.js"
+
+[services.production]
+
+[services.production.run]
+args = ["node", "src/app.js"]

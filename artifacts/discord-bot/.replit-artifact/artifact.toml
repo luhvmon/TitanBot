@@ -1,0 +1,11 @@
+artifactFormatVersion = 1
+id = "discord-bot"
+title = "TitanBot Discord Bot"
+kind = "api"
+
+[[services]]
+name = "TitanBot"
+deploymentTarget = "vm"
+
+[services.production]
+run = "node src/app.js"
